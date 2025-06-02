@@ -1,0 +1,13 @@
+{
+  "name": "ultimate-geography-interactive-map",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "node esbuild.config.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.5"
+  },
+  "dependencies": {
+  }
+}
