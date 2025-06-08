@@ -3,7 +3,7 @@
  * and core properties - program auxiliary data. Should not
  * be modified unless the author understands what they are doing
  */
-function getMapConfig() {
+export function getMapConfig() {
   let userConfig = JSON.parse(sessionStorage.getItem("userConfig"));
   let configObj = {};
   configObj.commonConfig = {

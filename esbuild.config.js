@@ -1,11 +1,9 @@
-// esbuild.config.js
 const esbuild = require('esbuild');
 
 esbuild.build({
-    entryPoints: ['TODO'],
+    entryPoints: ['src/init.js'],
     bundle: true,
     outfile: 'dist/_ug-im-bundle.js',
-    minify: false,
-    sourcemap: true,
+    minify: true,
     platform: 'browser',
 }).catch(() => process.exit(1));
