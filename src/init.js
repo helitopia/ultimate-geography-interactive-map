@@ -94,7 +94,7 @@ function initFrontMap() {
 
         onRegionSelected: swapToBackSide,
 
-        ...mobileSwipingHack(false)
+        showTooltip: false
     });
 }
 
@@ -115,10 +115,8 @@ function initBackMap() {
             animate: true
         },
 
-        ...mobileSwipingHack(commonConfig.toolTipEnabled, (event, tooltip) => {
-            tooltip._tooltip.style.backgroundColor = commonColors.tooltipBackground;
-            tooltip._tooltip.style.color = commonColors.tooltipText;
-        })
+        showTooltip: commonConfig.toolTipEnabled,
+        onRegionTooltipShow: setUpTooltipColors
     });
 }
 
@@ -129,28 +127,6 @@ function initBackMap() {
  */
 function clearTooltips() {
     commonElements.mapTooltips.forEach(x => x.remove());
-}
-
-/**
- * Jsvectormap library bug - map swiping does not work on mobile with disabled tooltip.
- * Enable tooltip and hide it in case original tooltip is not displayable.
- * Current handling is temporary fix until library issue is resolved
- */
-function mobileSwipingHack(tooltipEnabled, tooltipShowHandler) {
-    return commonConfig.isMobile
-        ? {
-            showTooltip: true,
-            onRegionTooltipShow(event, tooltip) {
-                if (tooltipEnabled && tooltipShowHandler)
-                    tooltipShowHandler(event, tooltip)
-                else
-                    tooltip._tooltip.style.display = "none";
-            }
-        }
-        : {
-            showTooltip: tooltipEnabled,
-            onRegionTooltipShow: tooltipShowHandler
-        }
 }
 
 /**
@@ -193,4 +169,12 @@ function getRegionColor() {
     return commonConfig.regionCode === sessionStorage.getItem(commonConfig.selectedRegionSessionKey)
         ? commonColors.correctRegionHighlight
         : commonColors.incorrectRegionHighlight;
+}
+
+/**
+ * Set up of the colors of the tooltip shown on the back side of the card
+ */
+function setUpTooltipColors(event, tooltip) {
+    tooltip._tooltip.style.backgroundColor = commonColors.tooltipBackground;
+    tooltip._tooltip.style.color = commonColors.tooltipText;
 }
