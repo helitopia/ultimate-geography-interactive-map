@@ -6,7 +6,8 @@
     "build": "node esbuild.config.js"
   },
   "devDependencies": {
-    "esbuild": "^0.25.5"
+    "esbuild": "^0.25.5",
+    "esbuild-plugin-copy": "^2.1.1"
   },
   "dependencies": {
     "jsvectormap": "1.7.0"
