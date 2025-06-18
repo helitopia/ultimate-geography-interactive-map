@@ -1,8 +1,11 @@
 import {getMapConfig} from "./config";
-import "jsvectormap/dist/jsvectormap.min.js"
-import "jsvectormap/dist/jsvectormap.min.css"
 import "./style.css"
 import worldMap from "./world.json"
+import svgPanZoom from 'svg-pan-zoom';
+
+declare const AnkiDroidJS: any;
+declare function _typeAnsPress(): void;
+declare function showAnswer(): void;
 
 const mapConfig = getMapConfig();
 const commonConfig = mapConfig.commonConfig;
@@ -10,11 +13,8 @@ const commonColors = mapConfig.commonColors;
 const commonElements = mapConfig.commonElements;
 const commonMap = mapConfig.commonMap;
 
-clearTooltips();
-
 if (resolveInteractiveEnabled()) {
     interactiveMapMode(true);
-    jsVectorMap.addMap(commonMap.map, worldMap);
     try {
         if (cardSide(commonConfig.questionCardSideName))
             initFrontMap();
@@ -39,7 +39,7 @@ function resolveInteractiveEnabled() {
 /**
  * @returns {boolean} true when device is not mobile, false otherwise
  */
-function nonMobile() {
+function nonMobile(): boolean {
     return !commonConfig.isMobile
 }
 
@@ -47,7 +47,7 @@ function nonMobile() {
  * @returns {boolean} true if and only if the device is mobile
  * and interactive map is enabled
  */
-function interactiveMobileEnabled() {
+function interactiveMobileEnabled(): boolean {
     return commonConfig.isMobile && commonConfig.interactiveMobileEnabled;
 }
 
@@ -55,7 +55,7 @@ function interactiveMobileEnabled() {
  * Set interactive display map mode based on passed boolean argument
  * Note, that static fallback is specifically displayed by default in case current script fails to be loaded
  */
-function interactiveMapMode(enabled) {
+function interactiveMapMode(enabled : boolean) {
     commonElements.staticMap.style.display = enabled ? "none" : "block";
     commonElements.interactiveMap.style.display = enabled ? "block" : "none";
 }
@@ -65,7 +65,7 @@ function interactiveMapMode(enabled) {
  * Note that current card side is figured out via accessing the value of
  * data attribute of the &lt;script&gt; element invoking the program
  */
-function cardSide(cardSideName) {
+function cardSide(cardSideName : string) {
     return commonConfig.cardSide === cardSideName;
 }
 
@@ -75,58 +75,93 @@ function cardSide(cardSideName) {
  */
 function failInvalidRegionCode() {
     if (!worldMap.paths[commonConfig.regionCode])
-        throw Error(`Region code "${commonConfig.regionCode || "empty"}" does not exist in the map`);
+        throw Error(`Region code "${commonConfig.regionCode ?? "empty"}" does not exist in the map`);
 }
 
 /**
  * Initialization of the map displayed on the front side of the card
  */
 function initFrontMap() {
-    new jsVectorMap({
-        ...commonMap,
-        regionsSelectable: true,
-        regionsSelectableOne: true,
+    let isPanning = false;
 
-        regionStyle: {
-            ...commonMap.regionStyle,
-            selected: {fill: commonColors.selectedRegion}
-        },
+    // Insert svg from config into #map
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', "svg");
+    svg.setAttribute("id", "svgMap");
+    svg.setAttribute("style", "border: solid; background-color: #b3dff5;");
+    svg.setAttribute("width", worldMap.width.toString());
+    svg.setAttribute("height", worldMap.height.toString());
+    svg.addEventListener("mousedown", () => isPanning = false)
+    svg.addEventListener("mousemove", () => isPanning = true)
+    document.querySelector("#map").append(svg);
 
-        onRegionSelected: swapToBackSide,
+    for (const regionCode in worldMap.paths) {
+        let path = document.createElementNS('http://www.w3.org/2000/svg', "path");
+        path.setAttribute("fill", "#fdfbe5");
+        path.setAttribute("stroke", "#757674");
+        path.setAttribute("stroke-width", "1");
+        path.setAttribute("d", worldMap.paths[regionCode].path);
+        path.setAttribute("vector-effect", "non-scaling-stroke");
 
-        showTooltip: false
-    });
+        // setup hover events
+        path.addEventListener("mouseover", () => {
+            path.setAttribute("fill", "#e7f3ea");
+            path.setAttribute("cursor", "pointer");
+        })
+        path.addEventListener("mouseout", () => {
+            path.setAttribute("fill", "#fdfbe5");
+            path.setAttribute("cursor", "default");
+        })
+
+        // setup click events
+        path.addEventListener("click", () => {
+            if (isPanning) return;
+            path.setAttribute("fill", "#ff0000");
+            swapToBackSide(regionCode);
+        })
+
+        svg.append(path);
+    }
+
+    // setup zoom and pan
+    svgPanZoom("#svgMap", {
+        zoomScaleSensitivity: 0.5,
+        maxZoom: 100,
+    })
 }
 
 /**
  * Initialization of the map displayed on the back side of the card
  */
 function initBackMap() {
-    new jsVectorMap({
-        ...commonMap,
-        selectedRegions: [commonConfig.regionCode],
+    let isPanning = false;
 
-        regionStyle: {
-            ...commonMap.regionStyle,
-            selected: {fill: getRegionColor()}
-        },
-        focusOn: {
-            region: commonConfig.regionCode,
-            animate: true
-        },
+    // Insert svg from config into #map
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', "svg");
+    svg.setAttribute("id", "svgMap");
+    svg.setAttribute("style", "border: solid; background-color: #b3dff5;");
+    svg.setAttribute("width", worldMap.width.toString());
+    svg.setAttribute("height", worldMap.height.toString());
+    document.querySelector("#map").append(svg);
 
-        showTooltip: commonConfig.toolTipEnabled,
-        onRegionTooltipShow: setUpTooltipColors
-    });
-}
+    for (const regionCode in worldMap.paths) {
+        let path = document.createElementNS('http://www.w3.org/2000/svg', "path");
 
-/**
- * Jsvectormap logic incompatibility with project specifics - tooltips are inserted
- * as direct children of &lt;body&gt; element and get persisted during cards review session
- * accumulating and littering the canvas. Current handling is temporary fix until library issue is resolved
- */
-function clearTooltips() {
-    commonElements.mapTooltips.forEach(x => x.remove());
+
+        path.setAttribute("fill", regionCode === commonConfig.regionCode ? getRegionColor() : "#fdfbe5");
+        path.setAttribute("stroke", "#757674");
+        path.setAttribute("stroke-width", "1");
+        path.setAttribute("d", worldMap.paths[regionCode].path);
+        path.setAttribute("vector-effect", "non-scaling-stroke");
+
+
+        svg.append(path);
+    }
+
+    // setup zoom and pan
+    svgPanZoom("#svgMap", {
+        zoomScaleSensitivity: 0.5,
+        maxZoom: 100,
+    })
 }
 
 /**
@@ -134,14 +169,13 @@ function clearTooltips() {
  * swap the card to back side if configuration allows to do so. The action is
  * achieved via sending "Enter" key event on manually defined hidden text area
  */
-function swapToBackSide(selectedRegionCode) {
+function swapToBackSide(selectedRegionCode : string) {
     sessionStorage.setItem(commonConfig.selectedRegionSessionKey, selectedRegionCode);
 
     if (!commonConfig.autoAnswerEnabled)
         return
 
-    if (!commonElements.hiddenTextarea.onkeypress)
-        commonElements.hiddenTextarea.onkeypress = () => _typeAnsPress();
+    commonElements.hiddenTextarea.onkeypress ??= () => _typeAnsPress();
 
     if (typeof AnkiDroidJS !== "undefined") {
         showAnswer();
@@ -169,12 +203,4 @@ function getRegionColor() {
     return commonConfig.regionCode === sessionStorage.getItem(commonConfig.selectedRegionSessionKey)
         ? commonColors.correctRegionHighlight
         : commonColors.incorrectRegionHighlight;
-}
-
-/**
- * Set up of the colors of the tooltip shown on the back side of the card
- */
-function setUpTooltipColors(event, tooltip) {
-    tooltip._tooltip.style.backgroundColor = commonColors.tooltipBackground;
-    tooltip._tooltip.style.color = commonColors.tooltipText;
 }

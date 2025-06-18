@@ -2,10 +2,10 @@ const esbuild = require('esbuild');
 const copy = require("esbuild-plugin-copy");
 
 esbuild.build({
-    entryPoints: ['src/init.js'],
+    entryPoints: ['src/index.ts'],
     bundle: true,
     outfile: 'dist/_ug-im-bundle.js',
-    minify: true,
+    // minify: true,
     platform: 'browser',
     plugins: [
         copy.copy({

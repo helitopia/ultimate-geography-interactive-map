@@ -1,3 +1,5 @@
+import {CommonColors, CommonConfig, CommonElements} from "./type";
+
 /**
  * Overall configuration. Includes validated user properties
  * and core properties - program auxiliary data. Should not
@@ -5,12 +7,11 @@
  */
 export function getMapConfig() {
   let userConfig = JSON.parse(sessionStorage.getItem("userConfig"));
-  let configObj = {};
+  let configObj : {commonConfig?: CommonConfig, commonColors?: CommonColors, commonElements?: CommonElements, commonMap?: object} = {};
   configObj.commonConfig = {
     interactiveEnabled: true,
     interactiveMobileEnabled: true,
     autoAnswerEnabled: true,
-    toolTipEnabled: false,
     ...filterObjValidBooleans(userConfig.commonFeatures),
 
     isMobile: document.documentElement.classList.contains("mobile"),
@@ -19,7 +20,6 @@ export function getMapConfig() {
     questionCardSideName: "question",
     answerCardSideName: "answer",
     selectedRegionSessionKey: "selectedRegion",
-    mapSvgId: "world"
   }
   configObj.commonColors = {
     region: "#fdfbe5",
@@ -28,29 +28,26 @@ export function getMapConfig() {
     correctRegionHighlight: "#329446",
     background: "#b3dff5",
     border: "#757674",
-    tooltipBackground: "#fdfbe5",
-    tooltipText: "#000000",
     ...filterObjValidColors(userConfig.commonColors)
   };
   configObj.commonElements = {
     interactiveMap: document.querySelector(".value--map"),
     staticMap: document.querySelector(".value--image"),
-    mapTooltips: document.querySelectorAll("body > div.jvm-tooltip"),
     hiddenTextarea: document.querySelector("textarea#typeans")
   };
   configObj.commonMap = {
-    selector: configObj.commonElements.interactiveMap,
-    map: configObj.commonConfig.mapSvgId,
-    zoomButtons: false,
-    zoomMax: 25,
-    backgroundColor: configObj.commonColors.background,
-    regionStyle: {
-      initial: {
-        fill: configObj.commonColors.region,
-        stroke: configObj.commonColors.border,
-        strokeWidth: 0.2
-      }
-    }
+    // selector: configObj.commonElements.interactiveMap,
+    // map: configObj.commonConfig.mapSvgId,
+    // zoomButtons: false,
+    // zoomMax: 25,
+    // backgroundColor: configObj.commonColors.background,
+    // regionStyle: {
+    //   initial: {
+    //     fill: configObj.commonColors.region,
+    //     stroke: configObj.commonColors.border,
+    //     strokeWidth: 0.2
+    //   }
+    // }
   };
   return configObj;
 }
@@ -59,7 +56,7 @@ export function getMapConfig() {
  * Assemble the object from properties of original object
  * values of which match the predicate
  */
-function filterObj(obj, predicate, mapper) {
+function filterObj(obj : object, predicate : (val : any) => boolean, mapper? : (val : any) => any) {
   let filtered = {};
   for (let [key, value] of Object.entries(obj))
     if (predicate(value))
@@ -71,8 +68,8 @@ function filterObj(obj, predicate, mapper) {
  * Assemble the object with valid boolean property values
  * ignoring invalid and non-boolean properties
  */
-function filterObjValidBooleans(obj) {
-  let toLower = v => v.toString().toLowerCase()
+function filterObjValidBooleans(obj : object) {
+  let toLower = (v: string) => v.toLowerCase()
   return filterObj(
     obj,
     v => ["true", "false"].some(x => toLower(v) === x),
@@ -83,7 +80,7 @@ function filterObjValidBooleans(obj) {
  * Assemble the object with valid HEX string property values
  * ignoring invalid and non-HEX properties
  */
-function filterObjValidColors(obj) {
+function filterObjValidColors(obj : object) {
   return filterObj(
     obj,
     v => v.toString().match(/^#(?:[0-9a-fA-F]{3}){1,2}$/g)

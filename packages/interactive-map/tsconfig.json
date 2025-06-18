@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "moduleResolution": "bundler",
+    "outDir": "../../dist",
+    "lib": ["ES2017", "dom"]
+  },
+  "include": [
+    "src"
+  ]
+}
