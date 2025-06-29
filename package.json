@@ -1,11 +1,12 @@
 {
   "name": "ultimate-geography-interactive-map",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-
-  },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "esbuild": "^0.25.5",
+    "esbuild-plugin-copy": "^2.1.1",
+    "typescript": "^5.5.3"
+  }
 }
