@@ -16,6 +16,7 @@ const commonConfig = {
                 {from: ['./src/css/*'], to: ['./css']},
                 {from: ['./src/js/*'], to: ['./js']},
                 {from: ['../../node_modules/interactive-map/dist/_ug-im-bundle.js'], to: ['./']},
+                {from: ['../../node_modules/interactive-map/dist/_ug-im-bundle.js.map'], to: ['./']},
                 {from: ['../../node_modules/interactive-map/dist/_ug-im-bundle.css'], to: ['./']},
             ]
         })

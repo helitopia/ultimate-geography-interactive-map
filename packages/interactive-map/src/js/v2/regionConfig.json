@@ -1,0 +1,44 @@
+{
+  "commonAreas": {
+    "PakistanIndiaNum1": ""
+  },
+
+  "regions": {
+    "China": {
+      "area": "...",
+      "disputedRegions": [
+        {
+          "controlType": "CLAIMED",
+          "name": "Taiwan"
+        }
+      ]
+    },
+    "Taiwan": {
+      "area": "..."
+    },
+
+    "United Kingdom": {
+      "area": "...",
+      "aggregatedRegions": ["Scotland"]
+    },
+    "Scotland": {
+      "area": "..."
+    },
+
+    "Georgia": {
+      "area": "...",
+      "disputedRegions": [
+        {
+          "controlType": "CLAIMED",
+          "area": {
+            "type": "regionReference",
+            "name": "Abkhazia"
+          }
+        }
+      ]
+    },
+    "Abkhazia": {
+      "area": "..."
+    }
+  }
+}

@@ -2,16 +2,17 @@ const esbuild = require('esbuild');
 const copy = require("esbuild-plugin-copy");
 
 esbuild.build({
-    entryPoints: ['src/index.ts'],
+    entryPoints: ['src/js/v2/index.ts'],
     bundle: true,
     outfile: 'dist/_ug-im-bundle.js',
+    sourcemap: true,
     // minify: true,
     platform: 'browser',
     plugins: [
         copy.copy({
             assets: [
                 {
-                    from: ['./src/Country - Map [Experimental].html'],
+                    from: ['./src/html/Country - Map [Experimental].html'],
                     to: ['./']
                 }
             ]
