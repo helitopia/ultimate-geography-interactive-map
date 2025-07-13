@@ -1,6 +1,5 @@
 import "../css/style.css"
-import FrontMap from "./model/frontMap";
-import BackMap from "./model/backMap";
+import {InteractiveFrontMap, InteractiveBackMap} from "./model/interactiveMap";
 import {commonConfig} from "./config";
 import {resolveInteractiveEnabled, interactiveMapMode, cardSide, failInvalidRegionCode} from "./util";
 
@@ -8,10 +7,10 @@ if (resolveInteractiveEnabled()) {
     interactiveMapMode(true);
     try {
         if (cardSide(commonConfig.questionCardSideName))
-            new FrontMap().init();
+            new InteractiveFrontMap();
         else if (cardSide(commonConfig.answerCardSideName)) {
             failInvalidRegionCode()
-            new BackMap().init();
+            new InteractiveBackMap();
         }
     } catch (e) {
         interactiveMapMode(false);

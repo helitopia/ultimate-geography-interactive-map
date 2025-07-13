@@ -12,11 +12,11 @@ export type CommonConfig = {
 };
 
 export type CommonColors = {
-    region: string;
+    defaultRegion: string;
     hoveredRegion: string;
     selectedRegion: string;
-    correctRegionHighlight: string;
-    incorrectRegionHighlight: string;
+    correctRegion: string;
+    incorrectRegion: string;
     background: string;
     border: string;
 };
@@ -39,14 +39,7 @@ export type UserConfig = {
         autoAnswerEnabled: string;
         toolTipEnabled: string;
     };
-    commonColors: {
-        region: string;
-        selectedRegion: string;
-        incorrectRegionHighlight: string;
-        correctRegionHighlight: string;
-        background: string;
-        border: string;
-    };
+    commonColors: CommonColors;
 }
 
 export type MapConfig = {
@@ -58,6 +51,6 @@ export type MapConfig = {
 export type RegionsConfig = Record<string, RegionConfig>;
 
 export type RegionConfig = {
-    path: string;
     name: string;
+    path: string;
 }
