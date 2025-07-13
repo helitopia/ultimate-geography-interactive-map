@@ -19,11 +19,11 @@ export const commonConfig: CommonConfig = {
 }
 
 export const commonColors: CommonColors = {
-    region: "#fdfbe5",
+    defaultRegion: "#fdfbe5",
     hoveredRegion: "#e7f3ea",
     selectedRegion: "#e7f3ea",
-    correctRegionHighlight: "#c12838",
-    incorrectRegionHighlight: "TODO",
+    correctRegion: "#c12838",
+    incorrectRegion: "#a232e3",
     background: "#b3dff5",
     border: "#757674",
     ...filterObjValidColors(userConfig.commonColors)
