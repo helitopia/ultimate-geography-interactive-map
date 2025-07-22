@@ -1,4 +1,4 @@
-import "../css/style.css"
+import "../../css/style.css"
 import {InteractiveFrontMap, InteractiveBackMap} from "./model/interactiveMap";
 import {commonConfig} from "./config";
 import {resolveInteractiveEnabled, interactiveMapMode, cardSide, failInvalidRegionCode} from "./util";

@@ -1,0 +1,73 @@
+
+
+if window.interactiveMap is null
+    window.interactiveMap = new InteractiveMap(config.mapConfigObj)
+
+var renderState = questionCardSide is front ? State.FRONT : State.BACK;
+window.interactiveMap.render(renderState)
+
+
+class InteractiveMap{
+    private mapState;
+
+    constructor(MapConfigObj mapConfigObj){
+
+    }
+
+    render(State mapState){
+        this.mapState = mapState;
+        ...
+    }
+}
+
+type MapConfigObj {
+    regions[]
+}
+
+
+[ United Kingdom, Wales, England,   Georgia, Abkhazia,  India-Pakistan disputed region, India ]
+
+Region:
+    name
+    path
+
+AggregationRegion extends Region:
+    aggregationRegionOf: Region
+
+AggregatedRegion extends Region:
+    aggregationRegions: Region[]
+
+DisputantRegion extends Region:
+    disputedRegions: DisputedRegion[]
+
+DisputedRegion extends Region:
+   disputantWithDeFactoControl: DisputantRegion
+
+
+[
+    "Ukraine": {
+        path: "..."
+    },
+
+
+    "Wales": {
+        type: "aggregationRegion"
+        aggregationRegionOf: "United Kingdom"
+    },
+    "United Kingdom": {
+        type: "aggregatedRegion",
+        aggregationRegions: ["Wales", ...]
+    }
+
+    "Abkhazia":{
+        type: "disputedRegion"
+    }
+    "Georgia": {
+
+    }
+
+    "India-Pakistan disputed region #1": {
+        type: "disputedRegion"
+        disputantWithDeFactoControl: "India"
+    }
+]
