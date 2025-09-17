@@ -1,12 +1,11 @@
 const esbuild = require('esbuild');
 const copy = require("esbuild-plugin-copy");
 
-esbuild.build({
+const commonConfig = {
     entryPoints: ['src/js/v2/index.ts'],
     bundle: true,
     outfile: 'dist/_ug-im-bundle.js',
     sourcemap: true,
-    // minify: true,
     platform: 'browser',
     plugins: [
         copy.copy({
@@ -18,4 +17,24 @@ esbuild.build({
             ]
         })
     ]
-}).catch(() => process.exit(1));
+}
+
+switch (process.argv[2]) {
+    case 'production':
+        esbuild.build({
+            ...commonConfig,
+            minify: true
+        })
+            .catch(() => process.exit(1));
+        break;
+    case 'development':
+        esbuild.context({
+            ...commonConfig,
+            sourcemap: true,
+        })
+            .then(ctx => ctx.watch())
+            .catch(() => process.exit(1));
+        break;
+    default:
+        throw new Error(`Unknown environment or absence of such: ${process.argv[2]}`);
+}

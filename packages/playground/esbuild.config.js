@@ -1,8 +1,6 @@
 const esbuild = require('esbuild');
 const copy = require("esbuild-plugin-copy");
 
-const isProd = process.env.NODE_ENV === 'production';
-
 const commonConfig = {
     entryPoints: ['src/index.ts'],
     bundle: true,
@@ -23,16 +21,22 @@ const commonConfig = {
     ]
 };
 
-if (isProd)
-    esbuild.build({
-        ...commonConfig,
-        minify: true
-    })
-        .catch(() => process.exit(1));
-else
-    esbuild.context({
-        ...commonConfig,
-        sourcemap: true,
-    })
-        .then(ctx => ctx.serve({servedir: 'dist'}))
-        .catch(() => process.exit(1));
+switch (process.argv[2]) {
+    case 'production':
+        esbuild.build({
+            ...commonConfig,
+            minify: true
+        })
+            .catch(() => process.exit(1));
+        break;
+    case 'development':
+        esbuild.context({
+            ...commonConfig,
+            sourcemap: true,
+        })
+            .then(ctx => ctx.serve({servedir: 'dist'}))
+            .catch(() => process.exit(1));
+        break;
+    default:
+        throw new Error(`Unknown environment or absence of such: ${process.argv[2]}`);
+}

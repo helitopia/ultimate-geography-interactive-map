@@ -1,15 +1,13 @@
 {
   "name": "interactive-map",
   "version": "1.0.0",
-  "main": "index.ts",
   "scripts": {
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "type-check": "tsc --noEmit",
-    "build": "npm run type-check && node esbuild.config.js"
-  },
-  "devDependencies": {
-    "esbuild": "^0.25.5",
-    "esbuild-plugin-copy": "^2.1.1",
-    "typescript": "^5.5.3"
+    "prebundle": "npm run clean && npm run type-check",
+    "bundle": "node esbuild.config.js",
+    "debug": "npm run bundle -- development",
+    "build": "npm run bundle -- production"
   },
   "dependencies": {
     "svg-pan-zoom": "3.6.2"
