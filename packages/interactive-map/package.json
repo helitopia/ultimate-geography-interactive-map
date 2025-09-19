@@ -4,6 +4,7 @@
   "scripts": {
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "type-check": "tsc --noEmit",
+    "validate-region-config": "node ./src/js/validate-region-config.mjs",
     "prebundle": "npm run clean && npm run type-check",
     "bundle": "node esbuild.config.js",
     "debug": "npm run bundle -- development",
@@ -11,5 +12,9 @@
   },
   "dependencies": {
     "svg-pan-zoom": "3.6.2"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.1"
   }
 }

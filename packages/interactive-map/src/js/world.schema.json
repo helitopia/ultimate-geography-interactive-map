@@ -1,0 +1,83 @@
+{
+  "type": "object",
+  "required": [
+    "regions",
+    "height",
+    "width"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "regions": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/region"
+      }
+    },
+    "height": {
+      "type": "number",
+      "minimum": 1
+    },
+    "width": {
+      "type": "number",
+      "minimum": 1
+    }
+  },
+  "$defs": {
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "area"
+      ],
+      "properties": {
+        "area": {
+          "type": "string"
+        },
+        "disputedRegions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/disputedRegion"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "disputedRegion": {
+      "type": "object",
+      "required": [
+        "controlType",
+        "area"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "controlType": {
+          "type": "string",
+          "enum": [
+            "CONTROLLED",
+            "CLAIMED"
+          ]
+        },
+        "area": {
+          "type": "object",
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "referenceType": {
+              "type": "string",
+              "enum": [
+                "regionReference",
+                "territoryReference"
+              ]
+            },
+            "id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
