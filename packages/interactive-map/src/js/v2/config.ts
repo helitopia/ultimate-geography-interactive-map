@@ -5,8 +5,8 @@ export const globalConfig: GlobalConfig = {
     interactiveMapModeForMobileEnabled: true,
     isMobileDevice: document.documentElement.classList.contains("mobile"),
 
-    interactiveMapContainer: document.querySelector(".value--map"),
-    staticMap: document.querySelector(".value--image"),
+    interactiveMapContainerRetrievalFunc: () => document.querySelector(".value--map"),
+    staticMapRetrievalFunc: () => document.querySelector(".value--image"),
 
     cardSide: document.currentScript.dataset.cardSide,
     questionCardSideName: "question",
@@ -16,6 +16,9 @@ export const globalConfig: GlobalConfig = {
         defaultRegion: "#fdfbe5",
         hoveredRegion: "#f7f4c5",
         selectedRegion: "#f7f4c5",
+        incorrectRegion: "#a232e3",
+        correctRegion: "#c12838",
+        background: "#b3dff5",
         border: "#757674"
     },
 

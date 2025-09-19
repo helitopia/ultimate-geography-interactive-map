@@ -11,8 +11,8 @@ export function isInteractiveMapModeAllowed() {
  * Note that static fallback is specifically displayed by default in case the current script fails to be loaded
  */
 export function setInteractiveMapMode(interactiveEnabled: boolean) {
-    globalConfig.staticMap.style.display = interactiveEnabled ? "none" : "block";
-    globalConfig.interactiveMapContainer.style.display = interactiveEnabled ? "block" : "none";
+    globalConfig.staticMapRetrievalFunc().style.display = interactiveEnabled ? "none" : "block";
+    globalConfig.interactiveMapContainerRetrievalFunc().style.display = interactiveEnabled ? "block" : "none";
 }
 
 /**

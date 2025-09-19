@@ -12,8 +12,8 @@ export type GlobalConfig = {
 
     isMobileDevice: boolean;
 
-    interactiveMapContainer: HTMLElement;
-    staticMap: HTMLElement;
+    interactiveMapContainerRetrievalFunc: () => HTMLElement;
+    staticMapRetrievalFunc: () => HTMLElement;
 
     /**
      * Note that the current card side is figured out via accessing the value of
@@ -27,6 +27,9 @@ export type GlobalConfig = {
         defaultRegion: string;
         hoveredRegion: string;
         selectedRegion: string;
+        incorrectRegion: string;
+        correctRegion: string;
+        background: string;
         border: string
     }
 
@@ -44,7 +47,11 @@ export type WorldMapConfig = {
 }
 
 export type Region = { path: string; name: string }
-export type MapRegion = Region & { svg: SVGPathElement };
+export type MapRegion = Region & {
+    svg: SVGPathElement
+    enableHandlers: () => void;
+    disableHandlers: () => void;
+};
 
 export const AnkiDroidJS: any = (window as any).AnkiDroidJS;
 export const _typeAnsPress: any = (window as any)._typeAnsPress;
