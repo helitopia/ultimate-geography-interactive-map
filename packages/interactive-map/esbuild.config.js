@@ -2,7 +2,7 @@ const esbuild = require('esbuild');
 const copy = require("esbuild-plugin-copy");
 
 const commonConfig = {
-    entryPoints: ['src/js/v2/index.ts'],
+    entryPoints: ['src/js/index.ts'],
     bundle: true,
     outfile: 'dist/_ug-im-bundle.js',
     sourcemap: true,
