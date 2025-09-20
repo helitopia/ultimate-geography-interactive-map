@@ -1,4 +1,4 @@
-import {MapRegion, Region, WorldMapConfig} from "../type";
+import {MapRegion, Region, WorldSchema} from "../type";
 import {globalConfig} from "../config";
 import svgPanZoom from "svg-pan-zoom";
 import {swapToBackSide} from "../util";
@@ -8,7 +8,7 @@ export class InteractiveMap {
     private readonly svgMapElement: SVGElement = document.createElementNS('http://www.w3.org/2000/svg', "svg");
     private codeToRegion: Record<string, MapRegion> = {};
 
-    constructor(worldMapConfig: WorldMapConfig) {
+    constructor(worldMapConfig: WorldSchema) {
         this.svgMapElement.setAttribute("width", String(worldMapConfig.width));
         this.svgMapElement.setAttribute("height", String(worldMapConfig.height));
         this.svgMapElement.classList.add("tappable");
@@ -16,12 +16,12 @@ export class InteractiveMap {
         this.svgMapElement.addEventListener("mousedown", () => InteractiveMap._isBeingPanned = false)
         this.svgMapElement.addEventListener("mousemove", () => InteractiveMap._isBeingPanned = true)
 
-        let regions: Record<string, Region> = worldMapConfig.paths;
+        let regions: Record<string, Region> = worldMapConfig.regions;
         for (const regionCode in regions) {
             let region = regions[regionCode];
 
             let svgPath = document.createElementNS('http://www.w3.org/2000/svg', "path");
-            svgPath.setAttribute("d", region.path);
+            svgPath.setAttribute("d", region.area);
 
             let handlersEnabled = true;
 
@@ -86,8 +86,21 @@ export class InteractiveMap {
         const selectedRegionCode = sessionStorage.getItem(globalConfig.selectedRegionSessionKey)
         const correctRegionCode = document.currentScript.dataset.regionCode
 
+        // if requested region is China:
+        //    both "CN" and "TW" selected codes are correct
+        //    draw China in red and its disputed territories in dashed red (tint of red for now)
+
+        // if requested region is Taiwan:
+        //    only "TW" selected code is correct
+        //    draw Taiwan in red
+
+
         this.codeToRegion[selectedRegionCode].svg.setAttribute("fill", globalConfig.colors.incorrectRegion);
         this.codeToRegion[correctRegionCode].svg.setAttribute("fill", globalConfig.colors.correctRegion);
+        this.codeToRegion[correctRegionCode].disputedRegions
+            .forEach(
+                disputedRegion => this.codeToRegion[disputedRegion.area.id].svg.setAttribute("fill", globalConfig.colors.correctRegion)
+            )
 
         for (const regionCode in this.codeToRegion)
             this.codeToRegion[regionCode].disableHandlers();

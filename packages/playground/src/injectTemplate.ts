@@ -3,8 +3,8 @@ import frontAndBackSideHtmlStringTemplate from "interactive-map/dist/Country - M
 
 const CARD_CONTENT_CONTAINER = document.querySelector("#qa");
 const HANDLE_BAR_VARIABLES_MAP: Record<string, string> = {
-    "Country": "Ukraine",
-    "Region code": "UA",
+    "Country": "China",
+    "Region code": "CN",
     "Country info": "",
     "Map": "dummy value"
 };

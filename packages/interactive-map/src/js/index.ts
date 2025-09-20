@@ -6,6 +6,7 @@ import worldMap from "./world.json";
 if (isInteractiveMapModeAllowed()) {
     setInteractiveMapMode(true);
     try {
+        // @ts-ignore
         (window.interactiveMap ||= new InteractiveMap(worldMap)).render(globalConfig.cardSide);
     } catch (e) {
         setInteractiveMapMode(false);
